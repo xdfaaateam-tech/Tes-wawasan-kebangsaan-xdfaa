@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TES WAWASAN KEBANGSAAN - XDFAA TEAM</title>
+    <style>
+        :root {
+            --primary-color: #0d47a1;
+            --secondary-color: #1565c0;
+            --accent-color: #00bcd4;
+            --success-color: #4caf50;
+            --danger-color: #d32f2f;
+            --text-color: #333;
+            --bg-color: #f0f2f5;
+            --header-height: 70px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- Header --- */
+        header {
+            height: var(--header-height);
+            background: linear-gradient(135deg, #000000, #1a1a2e);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-container {
+            height: 50px;
+            width: auto;
+        }
+        
+        .logo-img {
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .exam-title h1 {
+            font-size: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: bold;
+        }
+
+        .timer-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 5px;
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+        }
+
+        .user-info {
+            display: none;
+            text-align: right;
+            font-size: 0.85rem;
+        }
+
+        /* --- Main Content --- */
+        main {
+            margin-top: var(--header-height);
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            margin-bottom: 40px;
+        }
+
+        /* --- Login Screen Specifics --- */
+        #loginScreen {
+            text-align: center;
+        }
+
+        /* Perbaikan tata letak logo: menggunakan container yang konsisten */
+        #loginScreen .logo-container {
+            height: 180px; 
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        #loginScreen .logo-img {
+            height: 100%;
+            max-width: 100%;
+        }
+
+        .login-intro {
+            margin-bottom: 30px;
+        }
+
+        .login-intro h2 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+        /* --- Forms --- */
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+        }
+
+        .btn {
+            padding: 12px 30px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        /* --- Exam Interface --- */
+        .exam-layout {
+            display: grid;
+            grid-template-columns: 1fr 250px;
+            gap: 30px;
+        }
+
+        .question-area {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        .options-list {
+            list-style: none;
+        }
+
+        .option-item {
+            margin-bottom: 12px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-item:hover {
+            background-color: #f0f8ff;
+            border-color: var(--secondary-color);
+        }
+
+        .option-item.selected {
+            background-color: #e3f2fd;
+            border-color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .option-marker {
+            width: 30px;
+            height: 30px;
+            background-color: #e0e0e0;
+            color: #555;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .option-item.selected .option-marker {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        /* --- Navigation Grid --- */
+        .nav-panel {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #eee;
+            height: fit-content;
+        }
+
+        .nav-panel h3 {
+            font-size: 1rem;
+            margin-bottom: 15px;
+            text-align: center;
+            color: var(--primary-color);
+        }
+
+        .question-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+        }
+
+        .grid-item {
+            width: 100%;
+            aspect-ratio: 1;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            cursor: pointer;
+            color: #555;
+            transition: all 0.2s;
+        }
+
+        .grid-item:hover {
+            border-color: var(--primary-color);
+        }
+
+        .grid-item.active {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px var(--secondary-color) inset;
+        }
+
+        .grid-item.answered {
+            background-color: var(--success-color);
+            color: white;
+            border-color: var(--success-color);
+        }
+
+        .exam-controls {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+            grid-column: 1 / -1;
+        }
+
+        .btn-finish {
+            background-color: var(--accent-color);
+            padding: 12px 40px;
+        }
+
+        /* --- Result Screen --- */
+        .result-card {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3rem;
+            font-weight: bold;
+            margin: 0 auto 20px;
+            box-shadow: 0 10px 20px rgba(13, 71, 161, 0.3);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .stat-box {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .motivation-text {
+            background: #fff3cd;
+            color: #856404;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+            font-style: italic;
+            font-size: 1.1rem;
+            border-left: 5px solid #ffc107;
+        }
+
+        /* --- Footer & Social --- */
+        footer {
+            background: #1a1a2e;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            width: 100%;
+            margin-top: auto;
+        }
+
+        .footer-content h3 {
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            color: var(--accent-color);
+        }
+
+        .social-links a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 0.9rem;
+            padding: 5px 10px;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 4px;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+
+        .social-links a:hover {
+            background: var(--accent-color);
+            border-color: var(--accent-color);
+            color: #000;
+        }
+
+        /* --- Toast & Utility --- */
+        .hidden { display: none !important; }
+        
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 20px 40px;
+            border-radius: 8px;
+            text-align: center;
+            z-index: 2000;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border-left: 5px solid var(--danger-color);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .exam-layout {
+                grid-template-columns: 1fr;
+            }
+            .nav-panel {
+                order: -1;
+                margin-bottom: 20px;
+            }
+            .header-left .exam-title h1 { font-size: 0.8rem; }
+            .user-info { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="header-left">
+            <div class="logo-container">
+                <img src="https://z-cdn-media.chatglm.cn/files/1a59a531-a711-4c09-b9db-27c31c953c11.jpeg?auth_key=1876776290-d2846574a7a141ffae9229ac93a85c63-0-dd4776316507d57b0452dfdad52a3413" alt="Logo XDFAA TEAM" class="logo-img">
+            </div>
+            <div class="exam-title">
+                <h1>TES WAWASAN KEBANGSAAN</h1>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="user-info" id="headerUserInfo">
+                <div id="headerName">Nama Peserta</div>
+            </div>
+            <div class="timer-box" id="timerDisplay">60:00</div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Login Screen -->
+        <div id="loginScreen" class="container">
+            <!-- Perbaikan tata letak logo: menggunakan div container -->
+            <div class="logo-container">
+                <img src="https://z-cdn-media.chatglm.cn/files/1a59a531-a711-4c09-b9db-27c31c953c11.jpeg?auth_key=1876776290-d2846574a7a141ffae9229ac93a85c63-0-dd4776316507d57b0452dfdad52a3413" alt="Logo XDFAA TEAM" class="logo-img">
+            </div>
+            
+            <div class="login-intro">
+                <h2>SELAMAT DATANG</h2>
+                <p>Silakan isi data diri untuk memulai tes.</p>
+                <!-- Update jumlah soal menjadi 35 -->
+                <p style="font-size: 0.85rem; color: #666; margin-top: 5px;">Waktu: 60 Menit | Jumlah Soal: 35 | Dilarang keluar aplikasi.</p>
+            </div>
+
+            <form id="registrationForm" style="max-width: 500px; margin: 0 auto;">
+                <div class="form-group">
+                    <label for="inputName">Nama Lengkap</label>
+                    <input type="text" id="inputName" class="form-control" placeholder="Nama Lengkap" required>
+                </div>
+                <div class="form-group">
+                    <label for="inputAge">Usia</label>
+                    <input type="number" id="inputAge" class="form-control" placeholder="Contoh: 17" min="10" max="40" required>
+                </div>
+                <div class="form-group">
+                    <label for="selectProvince">Provinsi</label>
+                    <select id="selectProvince" class="form-control" required>
+                        <option value="">-- Pilih Provinsi --</option>
+                        <!-- JS generated -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="selectCity">Kabupaten / Kota</label>
+                    <select id="selectCity" class="form-control" required disabled>
+                        <option value="">-- Pilih Kota/Kabupaten --</option>
+                    </select>
+                </div>
+                <div style="margin-top: 30px;">
+                    <button type="submit" class="btn" style="width: 100%;">MULAI MENGERJAKAN</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Exam Screen -->
+        <div id="examScreen" class="container hidden">
+            <div class="exam-layout">
+                <!-- Area Soal -->
+                <div class="question-area">
+                    <div style="margin-bottom: 15px; color: #666; font-weight: bold;">
+                        Soal No. <span id="currentQuestionNum">1</span> dari 35
+                    </div>
+                    <div class="question-text" id="questionText">
+                        Loading...
+                    </div>
+                    <ul class="options-list" id="optionsContainer">
+                        <!-- Options Generated by JS -->
+                    </ul>
+                </div>
+
+                <!-- Area Navigasi -->
+                <div class="nav-panel">
+                    <h3>Navigasi Soal</h3>
+                    <div class="legend" style="display: flex; gap: 10px; margin-bottom: 10px; font-size: 0.8rem;">
+                        <div style="display:flex; align-items:center; gap:5px;"><div style="width:12px; height:12px; background:white; border:1px solid #ccc;"></div> Belum</div>
+                        <div style="display:flex; align-items:center; gap:5px;"><div style="width:12px; height:12px; background:#4caf50;"></div> Selesai</div>
+                    </div>
+                    <div class="question-grid" id="questionGrid">
+                        <!-- Grid Generated by JS (1-35) -->
+                    </div>
+                </div>
+
+                <!-- Tombol Kontrol -->
+                <div class="exam-controls">
+                    <button id="btnPrev" class="btn" style="background-color: #757575;" disabled>&laquo; Sebelumnya</button>
+                    <button id="btnFinish" class="btn btn-finish">KUMPULKAN</button>
+                    <button id="btnNext" class="btn">Selanjutnya &raquo;</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="resultScreen" class="container hidden">
+            <div class="result-card">
+                <img src="https://z-cdn-media.chatglm.cn/files/1a59a531-a711-4c09-b9db-27c31c953c11.jpeg?auth_key=1876776290-d2846574a7a141ffae9229ac93a85c63-0-dd4776316507d57b0452dfdad52a3413" alt="Logo" style="width: 80px; margin-bottom: 20px; opacity: 0.8;">
+                <h2>Hasil Ujian</h2>
+                
+                <div class="score-circle" id="finalScore">0</div>
+
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-value" style="color: var(--success-color);" id="resCorrect">0</div>
+                        <div class="stat-label">Benar</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" style="color: var(--danger-color);" id="resWrong">0</div>
+                        <div class="stat-label">Salah</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" style="color: #757575;" id="resUnanswered">0</div>
+                        <div class="stat-label">Tidak Dikerjakan</div>
+                    </div>
+                </div>
+
+                <div id="motivationContainer" class="motivation-text hidden">
+                    <!-- Motivasi muncul disini -->
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <p style="margin-bottom: 15px; color: #666;">Terima kasih telah mengikuti seleksi.</p>
+                    <button onclick="location.reload()" class="btn">Kembali ke Halaman Awal</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Sosial Media -->
+    <footer>
+        <div class="footer-content">
+            <h3>XDFAA TEAM OFFICIAL</h3>
+            <div class="social-links">
+                <a href="https://www.instagram.com/xdfaa_team.id?igsh=YmN2bXFraHF5YjM1" target="_blank">Instagram</a>
+                <a href="https://xdfaaateam-tech.github.io/Xdfaaa_team/#portfolio" target="_blank">Website Resmi</a>
+            </div>
+            <p style="margin-top: 10px; font-size: 0.8rem; opacity: 0.7;">&copy; 2023 XDFAA Team. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Toast Security -->
+    <div id="toast" class="toast hidden">
+        <h3 style="margin-bottom: 10px;">PELANGGARAN TERDETEKSI!</h3>
+        <p>Anda terdeteksi meninggalkan halaman.</p>
+        <p style="margin-top: 10px; font-size: 0.9rem; font-style: italic;">Ujian akan direset ulang...</p>
+    </div>
+
+    <script>
+        // --- DATA INDONESIA (Provinsi & Kota) ---
+        const indonesiaData = {
+            "Aceh": ["Kab. Aceh Barat", "Kab. Aceh Barat Daya", "Kab. Aceh Besar", "Kab. Aceh Jaya", "Kab. Aceh Selatan", "Kab. Aceh Singkil", "Kab. Aceh Tamiang", "Kab. Aceh Tengah", "Kab. Aceh Tenggara", "Kab. Aceh Timur", "Kab. Aceh Utara", "Kab. Bener Meriah", "Kab. Bireuen", "Kab. Gayo Lues", "Kab. Nagan Raya", "Kab. Pidie", "Kab. Pidie Jaya", "Kab. Simeulue", "Kota Banda Aceh", "Kota Langsa", "Kota Lhokseumawe", "Kota Sabang", "Kota Subulussalam"],
+            "Sumatera Utara": ["Kab. Asahan", "Kab. Batubara", "Kab. Dairi", "Kab. Deli Serdang", "Kab. Humbang Hasundutan", "Kab. Karo", "Kab. Labuhanbatu", "Kab. Labuhanbatu Selatan", "Kab. Labuhanbatu Utara", "Kab. Langkat", "Kab. Mandailing Natal", "Kab. Nias", "Kab. Nias Barat", "Kab. Nias Selatan", "Kab. Nias Utara", "Kab. Padang Lawas", "Kab. Padang Lawas Utara", "Kab. Pakpak Bharat", "Kab. Samosir", "Kab. Serdang Bedagai", "Kab. Simalungun", "Kab. Tapanuli Selatan", "Kab. Tapanuli Tengah", "Kab. Tapanuli Utara", "Kab. Toba", "Kota Binjai", "Kota Gunungsitoli", "Kota Medan", "Kota Padangsidimpuan", "Kota Pematangsiantar", "Kota Sibolga", "Kota Tanjungbalai", "Kota Tebing Tinggi"],
+            "Sumatera Barat": ["Kab. Agam", "Kab. Dharmasraya", "Kab. Kepulauan Mentawai", "Kab. Lima Puluh Kota", "Kab. Padang Pariaman", "Kab. Pasaman", "Kab. Pasaman Barat", "Kab. Pesisir Selatan", "Kab. Sijunjung", "Kab. Solok", "Kab. Solok Selatan", "Kab. Tanah Datar", "Kota Bukittinggi", "Kota Padang", "Kota Padangpanjang", "Kota Pariaman", "Kota Payakumbuh", "Kota Sawahlunto", "Kota Solok"],
+            "Riau": ["Kab. Bengkalis", "Kab. Indragiri Hilir", "Kab. Indragiri Hulu", "Kab. Kampar", "Kab. Kepulauan Meranti", "Kab. Kuantan Singingi", "Kab. Pelalawan", "Kab. Rokan Hilir", "Kab. Rokan Hulu", "Kab. Siak", "Kota Dumai", "Kota Pekanbaru"],
+            "Kepulauan Riau": ["Kab. Bintan", "Kab. Karimun", "Kab. Kepulauan Anambas", "Kab. Lingga", "Kab. Natuna", "Kota Batam", "Kota Tanjung Pinang"],
+            "Jambi": ["Kab. Batanghari", "Kab. Bungo", "Kab. Kerinci", "Kab. Merangin", "Kab. Muaro Jambi", "Kab. Sarolangun", "Kab. Tanjung Jabung Barat", "Kab. Tanjung Jabung Timur", "Kab. Tebo", "Kota Jambi", "Kota Sungaipenuh"],
+            "Sumatera Selatan": ["Kab. Banyuasin", "Kab. Empat Lawang", "Kab. Lahat", "Kab. Muara Enim", "Kab. Musi Banyuasin", "Kab. Musi Rawas", "Kab. Musi Rawas Utara", "Kab. Ogan Ilir", "Kab. Ogan Komering Ilir", "Kab. Ogan Komering Ulu", "Kab. Ogan Komering Ulu Selatan", "Kab. Ogan Komering Ulu Timur", "Kab. Penukal Abab Lematang Ilir", "Kota Lubuklinggau", "Kota Pagar Alam", "Kota Palembang", "Kota Prabumulih"],
+            "Bangka Belitung": ["Kab. Bangka", "Kab. Bangka Barat", "Kab. Bangka Selatan", "Kab. Bangka Tengah", "Kab. Belitung", "Kab. Belitung Timur", "Kota Pangkalpinang"],
+            "Bengkulu": ["Kab. Bengkulu Selatan", "Kab. Bengkulu Tengah", "Kab. Bengkulu Utara", "Kab. Kaur", "Kab. Kepahiang", "Kab. Lebong", "Kab. Mukomuko", "Kab. Rejang Lebong", "Kab. Seluma", "Kota Bengkulu"],
+            "Lampung": ["Kab. Lampung Barat", "Kab. Lampung Selatan", "Kab. Lampung Tengah", "Kab. Lampung Timur", "Kab. Lampung Utara", "Kab. Mesuji", "Kab. Pesawaran", "Kab. Pesisir Barat", "Kab. Pringsewu", "Kab. Tanggamus", "Kab. Tulang Bawang", "Kab. Tulang Bawang Barat", "Kab. Way Kanan", "Kota Bandar Lampung", "Kota Metro"],
+            "Banten": ["Kab. Tangerang", "Kab. Serang", "Kab. Lebak", "Kab. Pandeglang", "Kota Tangerang", "Kota Tangerang Selatan", "Kota Cilegon", "Kota Serang"],
+            "DKI Jakarta": ["Kab. Administrasi Kepulauan Seribu", "Kota Jakarta Barat", "Kota Jakarta Pusat", "Kota Jakarta Selatan", "Kota Jakarta Timur", "Kota Jakarta Utara"],
+            "Jawa Barat": ["Kab. Bandung", "Kab. Bandung Barat", "Kab. Bekasi", "Kab. Bogor", "Kab. Ciamis", "Kab. Cianjur", "Kab. Cirebon", "Kab. Garut", "Kab. Indramayu", "Kab. Karawang", "Kab. Kuningan", "Kab. Majalengka", "Kab. Pangandaran", "Kab. Purwakarta", "Kab. Subang", "Kab. Sukabumi", "Kab. Sumedang", "Kab. Tasikmalaya", "Kota Bandung", "Kota Banjar", "Kota Bekasi", "Kota Bogor", "Kota Cimahi", "Kota Cirebon", "Kota Depok", "Kota Sukabumi", "Kota Tasikmalaya"],
+            "Jawa Tengah": ["Kab. Banjarnegara", "Kab. Banyumas", "Kab. Batang", "Kab. Blora", "Kab. Boyolali", "Kab. Brebes", "Kab. Cilacap", "Kab. Demak", "Kab. Grobogan", "Kab. Jepara", "Kab. Karanganyar", "Kab. Kebumen", "Kab. Kendal", "Kab. Klaten", "Kab. Kudus", "Kab. Magelang", "Kab. Pati", "Kab. Pekalongan", "Kab. Pemalang", "Kab. Purbalingga", "Kab. Purworejo", "Kab. Rembang", "Kab. Semarang", "Kab. Sragen", "Kab. Sukoharjo", "Kab. Tegal", "Kab. Temanggung", "Kab. Wonogiri", "Kab. Wonosobo", "Kota Magelang", "Kota Pekalongan", "Kota Salatiga", "Kota Semarang", "Kota Surakarta", "Kota Tegal"],
+            "DI Yogyakarta": ["Kab. Bantul", "Kab. Gunung Kidul", "Kab. Kulon Progo", "Kab. Sleman", "Kota Yogyakarta"],
+            "Jawa Timur": ["Kab. Bangkalan", "Kab. Banyuwangi", "Kab. Blitar", "Kab. Bojonegoro", "Kab. Bondowoso", "Kab. Gresik", "Kab. Jember", "Kab. Jombang", "Kab. Kediri", "Kab. Lamongan", "Kab. Lumajang", "Kab. Madiun", "Kab. Magetan", "Kab. Malang", "Kab. Mojokerto", "Kab. Nganjuk", "Kab. Ngawi", "Kab. Pacitan", "Kab. Pamekasan", "Kab. Pasuruan", "Kab. Ponorogo", "Kab. Probolinggo", "Kab. Sampang", "Kab. Sidoarjo", "Kab. Situbondo", "Kab. Sumenep", "Kab. Trenggalek", "Kab. Tuban", "Kab. Tulungagung", "Kota Batu", "Kota Blitar", "Kota Kediri", "Kota Madiun", "Kota Malang", "Kota Mojokerto", "Kota Pasuruan", "Kota Probolinggo", "Kota Surabaya"],
+            "Bali": ["Kab. Badung", "Kab. Bangli", "Kab. Buleleng", "Kab. Gianyar", "Kab. Jembrana", "Kab. Karangasem", "Kab. Klungkung", "Kab. Tabanan", "Kota Denpasar"],
+            "Nusa Tenggara Barat": ["Kab. Bima", "Kab. Dompu", "Kab. Lombok Barat", "Kab. Lombok Tengah", "Kab. Lombok Timur", "Kab. Lombok Utara", "Kab. Sumbawa", "Kab. Sumbawa Barat", "Kota Bima", "Kota Mataram"],
+            "Nusa Tenggara Timur": ["Kab. Alor", "Kab. Belu", "Kab. Ende", "Kab. Flores Timur", "Kab. Kupang", "Kab. Lembata", "Kab. Manggarai", "Kab. Manggarai Barat", "Kab. Manggarai Timur", "Kab. Nagekeo", "Kab. Ngada", "Kab. Rote Ndao", "Kab. Sabu Raijua", "Kab. Sikka", "Kab. Sumba Barat", "Kab. Sumba Barat Daya", "Kab. Sumba Tengah", "Kab. Sumba Timur", "Kab. Timor Tengah Selatan", "Kab. Timor Tengah Utara", "Kota Kupang"],
+            "Kalimantan Barat": ["Kab. Bengkayang", "Kab. Kapuas Hulu", "Kab. Kayong Utara", "Kab. Ketapang", "Kab. Kubu Raya", "Kab. Landak", "Kab. Melawi", "Kab. Mempawah", "Kab. Sambas", "Kab. Sanggau", "Kab. Sekadau", "Kab. Sintang", "Kota Pontianak", "Kota Singkawang"],
+            "Kalimantan Tengah": ["Kab. Barito Selatan", "Kab. Barito Utara", "Kab. Barito Timur", "Kab. Gunung Mas", "Kab. Kapuas", "Kab. Katingan", "Kab. Kotawaringin Barat", "Kab. Kotawaringin Timur", "Kab. Lamandau", "Kab. Murung Raya", "Kab. Pulang Pisau", "Kab. Seruyan", "Kab. Sukamara", "Kota Palangka Raya"],
+            "Kalimantan Selatan": ["Kab. Balangan", "Kab. Banjar", "Kab. Barito Kuala", "Kab. Hulu Sungai Selatan", "Kab. Hulu Sungai Tengah", "Kab. Hulu Sungai Utara", "Kab. Kotabaru", "Kab. Tabalong", "Kab. Tanah Bumbu", "Kab. Tanah Laut", "Kab. Tapin", "Kota Banjarbaru", "Kota Banjarmasin"],
+            "Kalimantan Timur": ["Kab. Berau", "Kab. Kutai Barat", "Kab. Kutai Kartanegara", "Kab. Kutai Timur", "Kab. Mahakam Ulu", "Kab. Paser", "Kab. Penajam Paser Utara", "Kota Balikpapan", "Kota Bontang", "Kota Samarinda"],
+            "Kalimantan Utara": ["Kab. Bulungan", "Kab. Malinau", "Kab. Nunukan", "Kab. Tana Tidung", "Kota Tarakan"],
+            "Sulawesi Utara": ["Kab. Bolaang Mongondow", "Kab. Bolaang Mongondow Selatan", "Kab. Bolaang Mongondow Timur", "Kab. Bolaang Mongondow Utara", "Kab. Kepulauan Sangihe", "Kab. Kepulauan Siau Tagulandang Biaro", "Kab. Kepulauan Talaud", "Kab. Minahasa", "Kab. Minahasa Selatan", "Kab. Minahasa Tenggara", "Kab. Minahasa Utara", "Kota Bitung", "Kota Kotamobagu", "Kota Manado", "Kota Tomohon"],
+            "Sulawesi Tengah": ["Kab. Banggai", "Kab. Banggai Kepulauan", "Kab. Banggai Laut", "Kab. Buol", "Kab. Donggala", "Kab. Morowali", "Kab. Morowali Utara", "Kab. Parigi Moutong", "Kab. Poso", "Kab. Sigi", "Kab. Tojo Una-Una", "Kab. Toli-Toli", "Kota Palu"],
+            "Sulawesi Selatan": ["Kab. Bantaeng", "Kab. Barru", "Kab. Bone", "Kab. Bulukumba", "Kab. Enrekang", "Kab. Gowa", "Kab. Jeneponto", "Kab. Kepulauan Selayar", "Kab. Luwu", "Kab. Luwu Timur", "Kab. Luwu Utara", "Kab. Maros", "Kab. Pangkajene dan Kepulauan", "Kab. Pinrang", "Kab. Sidenreng Rappang", "Kab. Sinjai", "Kab. Soppeng", "Kab. Takalar", "Kab. Tana Toraja", "Kab. Toraja Utara", "Kab. Wajo", "Kota Makassar", "Kota Palopo", "Kota Parepare"],
+            "Sulawesi Tenggara": ["Kab. Bombana", "Kab. Buton", "Kab. Buton Selatan", "Kab. Buton Tengah", "Kab. Buton Utara", "Kab. Kolaka", "Kab. Kolaka Timur", "Kab. Kolaka Utara", "Kab. Konawe", "Kab. Konawe Kepulauan", "Kab. Konawe Selatan", "Kab. Konawe Utara", "Kab. Muna", "Kab. Muna Barat", "Kab. Wakatobi", "Kota Baubau", "Kota Kendari"],
+            "Gorontalo": ["Kab. Boalemo", "Kab. Bone Bolango", "Kab. Gorontalo", "Kab. Gorontalo Utara", "Kab. Pohuwato", "Kota Gorontalo"],
+            "Sulawesi Barat": ["Kab. Majene", "Kab. Mamasa", "Kab. Mamuju", "Kab. Mamuju Tengah", "Kab. Mamuju Utara", "Kab. Polewali Mandar"],
+            "Maluku": ["Kab. Buru", "Kab. Buru Selatan", "Kab. Kepulauan Aru", "Kab. Maluku Barat Daya", "Kab. Maluku Tengah", "Kab. Maluku Tenggara", "Kab. Maluku Tenggara Barat", "Kab. Seram Bagian Barat", "Kab. Seram Bagian Timur", "Kota Ambon", "Kota Tual"],
+            "Maluku Utara": ["Kab. Halmahera Barat", "Kab. Halmahera Tengah", "Kab. Halmahera Timur", "Kab. Halmahera Selatan", "Kab. Halmahera Utara", "Kab. Kepulauan Sula", "Kab. Pulau Morotai", "Kab. Pulau Taliabu", "Kota Ternate", "Kota Tidore Kepulauan"],
+            "Papua": ["Kab. Asmat", "Kab. Biak Numfor", "Kab. Boven Digoel", "Kab. Deiyai", "Kab. Dogiyai", "Kab. Intan Jaya", "Kab. Jayapura", "Kab. Jayawijaya", "Kab. Keerom", "Kab. Kepulauan Yapen", "Kab. Lanny Jaya", "Kab. Mamberamo Raya", "Kab. Mamberamo Tengah", "Kab. Mappi", "Kab. Merauke", "Kab. Mimika", "Kab. Nabire", "Kab. Nduga", "Kab. Paniai", "Kab. Pegunungan Bintang", "Kab. Puncak", "Kab. Puncak Jaya", "Kab. Sarmi", "Kab. Supiori", "Kab. Tolikara", "Kab. Waropen", "Kab. Yahukimo", "Kab. Yalimo", "Kota Jayapura"],
+            "Papua Barat": ["Kab. Fakfak", "Kab. Kaimana", "Kab. Manokwari", "Kab. Manokwari Selatan", "Kab. Maybrat", "Kab. Pegunungan Arfak", "Kab. Raja Ampat", "Kab. Sorong", "Kab. Sorong Selatan", "Kab. Tambrauw", "Kab. Teluk Bintuni", "Kab. Teluk Wondama", "Kota Sorong"],
+            "Papua Selatan": ["Kab. Asmat", "Kab. Boven Digoel", "Kab. Mappi", "Kab. Merauke"],
+            "Papua Tengah": ["Kab. Deiyai", "Kab. Dogiyai", "Kab. Intan Jaya", "Kab. Mimika", "Kab. Nabire", "Kab. Paniai", "Kab. Puncak", "Kab. Puncak Jaya"],
+            "Papua Pegunungan": ["Kab. Jayawijaya", "Kab. Lanny Jaya", "Kab. Mamberamo Tengah", "Kab. Nduga", "Kab. Pegunungan Bintang", "Kab. Tolikara", "Kab. Yahukimo", "Kab. Yalimo"],
+            "Papua Barat Daya": ["Kab. Fakfak", "Kab. Kaimana", "Kab. Maybrat", "Kab. Raja Ampat", "Kab. Sorong Selatan", "Kab. Tambrauw", "Kab. Teluk Bintuni"]
+        };
+
+        // --- SOAL: 25 soal awal (tidak diubah) + 10 soal tambahan (total 35) ---
+        const questionBank = [
+            // 25 soal awal (TWK & Sejarah Bendera)
+            { q: "Sang Saka Merah Putih yang dikibarkan pada 17 Agustus 1945 dijahit oleh...", o: ["Ibu Fatmawati", "Ibu Inggit Garnasih", "Ibu Dewi Sartika", "Ibu Martha Christina Tiahahu"], a: 0 },
+            { q: "Pada tahun berapakah istilah 'Paskibraka' secara resmi digunakan menggantikan istilah 'Pasukan Pengibar Bendera'?", o: ["1967", "1973", "1945", "1950"], a: 1 },
+            { q: "Dimanakah letak urutan sila ke-4 Pancasila dituangkan dalam lambang negara Garuda Pancasila?", o: ["Di kaki kiri Garuda", "Di cengkeram kiri dan kanan", "Di perisai bagian tengah bawah", "Di ekor Garuda"], a: 1 },
+            { q: "Pasukan Pengibar Bendera Pusaka (Paskibraka) bertugas mengibarkan Sang Saka Merah Putih pada upacara peringatan Proklamasi Kemerdekaan Indonesia di...", o: ["Halaman Istana Merdeka", "Lapangan Monas", "Gedung MPR/DPR", "Tugu Proklamasi"], a: 0 },
+            { q: "Sejarah mencatat bahwa pada 17 Agustus 1945, bendera Merah Putih dikibarkan dua kali. Pengibaran pertama dilakukan di Jalan Pegangsaan Timur No. 56, sedangkan pengibaran kedua dilakukan di...", o: ["Lapangan Ikada", "Alun-alun Jakarta", "Pelabuhan Tanjung Priok", "Halaman Gedung Agung"], a: 0 },
+            { q: "Dalam UUD 1945, pasal yang menjelaskan tentang 'Bendera Negara adalah Sang Merah Putih' terdapat pada pasal ke...", o: ["35", "36", "32", "33"], a: 0 },
+            { q: "Ukuran bendera nasional untuk kegunaan di gedung atau kantor pemerintahan adalah...", o: ["200 cm x 300 cm", "120 cm x 180 cm", "60 cm x 90 cm", "36 cm x 54 cm"], a: 0 },
+            { q: "Siapakah Ketua PPKI pertama yang mengesahkan Undang-Undang Dasar 1945?", o: ["Dr. K.H. Wachid Hasyim", "Ir. Soekarno", "Mohammad Hatta", "Drs. Mohammad Hatta"], a: 1 },
+            { q: "Teks proklamasi Indonesia ditulis oleh...", o: ["Ir. Soekarno", "Mohammad Hatta", "Ahmad Soebardjo", "B.M. Diah"], a: 0 },
+            { q: "Lambang negara Garuda Pancasila memiliki semboyan 'Bhinneka Tunggal Ika'. Semboyan ini diambil dari kitab...", o: ["Sutasoma", "Arjuna Wiwaha", "Kakawin", "Bharatayudha"], a: 0 },
+            { q: "Pada sidang BPUPKI tanggal 1 Juni 1945, Ir. Soekarno mengusulkan dasar negara yang dikenal dengan nama...", o: ["Pancasila", "Trisila", "Ekasila", "Piagam Jakarta"], a: 0 },
+            { q: "Komponen masyarakat yang berkedudukan sama sebagai sumber kekayaan bangsa dan dikelola oleh negara untuk sebesar-besarnya kemakmuran rakyat adalah pasal...", o: ["33 ayat (2)", "33 ayat (3)", "34 ayat (1)", "27 ayat (2)"], a: 2 },
+            { q: "Warna merah pada bendera Indonesia melambangkan...", o: ["Berani", "Suci", "Alam", "Subur"], a: 0 },
+            { q: "Siapakah sosok yang dijuluki sebagai 'Ayah Paskibra' karena jasanya mencetuskan pasukan pengibar bendera?", o: ["Mayor (Laut) Suhardjo", "Jenderal A.H. Nasution", "Letjen Soeharto", "Prof. DR. Moerdiono"], a: 0 },
+            { q: "Tahapan prosesi pengibaran bendera dalam upacara detik-detik proklamasi dilakukan pada waktu...", o: ["Saat sirene berbunyi", "Setelah pembacaan teks proklamasi", "Sebelum pidato presiden", "Saat menembakkan meriam"], a: 0 },
+            { q: "Persatuan Indonesia tercantum dalam UUD 1945 pasal...", o: ["1", "2", "3", "4"], a: 1 },
+            { q: "Bentuk negara Indonesia adalah negara kesatuan yang berbentuk...", o: ["Republik", "Monarki Konstitusional", "Federasi", "Serikat"], a: 0 },
+            { q: "Pancasila sebagai dasar negara sekaligus sebagai pandangan hidup bangsa disebut dengan istilah...", o: ["Philosophische Grondslag", "Staatsfundamentnorm", "Weltanschauung", "Rechtsstaat"], a: 2 },
+            { q: "Jumlah suku di Indonesia berdasarkan data BPS terbaru lebih dari...", o: ["1300 suku", "500 suku", "300 suku", "100 suku"], a: 0 },
+            { q: "Makna dari sila kedua Pancasila 'Kemanusiaan yang adil dan beradab' adalah...", o: ["Mengakui kesamaan derajat", "Cinta tanah air", "Kepercayaan terhadap Tuhan", "Musyawarah"], a: 0 },
+            { q: "Wilayah Indonesia yang secara astronomis terletak di antara...", o: ["6°LU - 11°LS dan 95°BT - 141°BT", "0° - 10°LS dan 90°BT - 140°BT", "5°LU - 10°LS dan 95°BT - 135°BT", "10°LU - 15°LS dan 80°BT - 145°BT"], a: 0 },
+            { q: "Istilah 'Paskibraka' mulai dipopulerkan melalui surat keputusan Menteri Dalam Negeri No...", o: ["UP. 015/3/1968", "015/3/1973", "015/3/1945", "UP. 015/3/1950"], a: 1 },
+            { q: "Jarak yang harus ditempuh oleh pasukan pengibar bendera dari barisan pasukan ke tiang bendera disebut dengan...", o: ["Langkah Kebersamaan", "Langkah Perubahan", "Langkah Hormat", "Lari Cepat"], a: 0 },
+            { q: "Wanita pertama yang menjadi pembawa baki dalam sejarah Paskibraka Nasional adalah...", o: ["Ratna Sari Dewi", "Siti Hardijanti", "Suharyati", "Soehartati"], a: 2 },
+            { q: "Warna putih pada bendera Indonesia melambangkan...", o: ["Suci", "Sembunyi", "Aman", "Tenang"], a: 0 },
+            
+            // --- TAMBAHAN 10 SOAL (TWK & Kebangsaan) ---
+            { q: "Siapakah yang mengetik naskah proklamasi kemerdekaan Indonesia?", o: ["Sayuti Melik", "B.M. Diah", "Adam Malik", "Sutan Syahrir"], a: 0 },
+            { q: "Di manakah teks proklamasi pertama kali dibacakan?", o: ["Jalan Pegangsaan Timur No. 56", "Lapangan Ikada", "Gedung Joang '45", "Rumah Laksamana Maeda"], a: 0 },
+            { q: "Siapa yang pertama kali mengusulkan nama Pancasila sebagai dasar negara?", o: ["Ir. Soekarno", "Mohammad Yamin", "Dr. Soepomo", "Mohammad Hatta"], a: 0 },
+            { q: "Hari Kesaktian Pancasila diperingati setiap tanggal ...", o: ["1 Oktober", "1 Juni", "18 Agustus", "30 September"], a: 0 },
+            { q: "Lambang sila ketiga Pancasila adalah ...", o: ["Pohon Beringin", "Bintang", "Kepala Banteng", "Padi dan Kapas"], a: 0 },
+            { q: "Siapakah pencipta lagu kebangsaan Indonesia Raya?", o: ["W.R. Supratman", "Ismail Marzuki", "C. Simanjuntak", "Kusbini"], a: 0 },
+            { q: "Dasar negara Indonesia adalah ...", o: ["Pancasila", "UUD 1945", "Bhinneka Tunggal Ika", "NKRI"], a: 0 },
+            { q: "Bendera Merah Putih pertama kali dikibarkan di ...", o: ["Jalan Pegangsaan Timur 56", "Istana Merdeka", "Gedung Sumpah Pemuda", "Lapangan Banteng"], a: 0 },
+            { q: "Arti dari semboyan Bhinneka Tunggal Ika adalah ...", o: ["Berbeda-beda tetapi tetap satu", "Bersatu kita teguh", "Dari rakyat oleh rakyat", "Persatuan Indonesia"], a: 0 },
+            { q: "Presiden pertama Republik Indonesia adalah ...", o: ["Ir. Soekarno", "Dr. Mohammad Hatta", "Soeharto", "B.J. Habibie"], a: 0 }
+        ];
+
+        // --- STATE ---
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let userAnswers = {}; // { index: optionIndex }
+        let timerInterval;
+        let timeLeft = 60 * 60;
+        let userData = {};
+        let isExamActive = false;
+
+        // --- DOM ---
+        const loginScreen = document.getElementById('loginScreen');
+        const examScreen = document.getElementById('examScreen');
+        const resultScreen = document.getElementById('resultScreen');
+        const selectProvince = document.getElementById('selectProvince');
+        const selectCity = document.getElementById('selectCity');
+        const timerDisplay = document.getElementById('timerDisplay');
+        const questionGrid = document.getElementById('questionGrid');
+        const toast = document.getElementById('toast');
+
+        // --- INIT ---
+        function init() {
+            populateProvinces();
+            setupEventListeners();
+        }
+
+        function populateProvinces() {
+            const provinces = Object.keys(indonesiaData).sort();
+            provinces.forEach(prov => {
+                const option = document.createElement('option');
+                option.value = prov;
+                option.textContent = prov;
+                selectProvince.appendChild(option);
+            });
+        }
+
+        function populateCities(provinceName) {
+            selectCity.innerHTML = '<option value="">-- Pilih Kota/Kabupaten --</option>';
+            if (!provinceName) {
+                selectCity.disabled = true;
+                return;
+            }
+            const cities = indonesiaData[provinceName].sort();
+            cities.forEach(city => {
+                const option = document.createElement('option');
+                option.value = city;
+                option.textContent = city;
+                selectCity.appendChild(option);
+            });
+            selectCity.disabled = false;
+        }
+
+        function setupEventListeners() {
+            selectProvince.addEventListener('change', (e) => populateCities(e.target.value));
+            document.getElementById('registrationForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                startExam();
+            });
+
+            document.getElementById('btnPrev').addEventListener('click', () => navigateQuestion(-1));
+            document.getElementById('btnNext').addEventListener('click', () => navigateQuestion(1));
+            document.getElementById('btnFinish').addEventListener('click', confirmFinish);
+
+            document.addEventListener("visibilitychange", handleSecurityViolation);
+            window.addEventListener("blur", handleSecurityViolation);
+        }
+
+        // --- EXAM LOGIC ---
+        function startExam() {
+            userData.name = document.getElementById('inputName').value;
+            userData.age = document.getElementById('inputAge').value;
+            userData.province = selectProvince.value;
+            userData.city = selectCity.value;
+
+            document.getElementById('headerName').textContent = `${userData.name} (${userData.age} Thn)`;
+            document.getElementById('headerUserInfo').style.display = 'block';
+
+            // Acak soal, tetapi tetap 35 soal
+            currentQuestions = [...questionBank].sort(() => Math.random() - 0.5);
+
+            loginScreen.classList.add('hidden');
+            examScreen.classList.remove('hidden');
+
+            isExamActive = true;
+            currentQuestionIndex = 0;
+            userAnswers = {};
+
+            generateGrid();
+            startTimer();
+            renderQuestion();
+        }
+
+        function generateGrid() {
+            questionGrid.innerHTML = '';
+            for (let i = 0; i < currentQuestions.length; i++) {
+                const box = document.createElement('div');
+                box.className = 'grid-item';
+                box.textContent = i + 1;
+                box.dataset.index = i;
+                box.onclick = () => jumpToQuestion(i);
+                questionGrid.appendChild(box);
+            }
+        }
+
+        function updateGridStatus() {
+            const boxes = document.querySelectorAll('.grid-item');
+            boxes.forEach((box, idx) => {
+                box.classList.remove('active');
+                if (idx === currentQuestionIndex) box.classList.add('active');
+
+                if (userAnswers[idx] !== undefined) {
+                    box.classList.add('answered');
+                } else {
+                    box.classList.remove('answered');
+                }
+            });
+        }
+
+        function jumpToQuestion(index) {
+            currentQuestionIndex = index;
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const qData = currentQuestions[currentQuestionIndex];
+            document.getElementById('currentQuestionNum').textContent = currentQuestionIndex + 1;
+            
+            const qTextEl = document.getElementById('questionText');
+            qTextEl.textContent = qData.q;
+
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+
+            qData.o.forEach((opt, idx) => {
+                const li = document.createElement('li');
+                li.className = 'option-item';
+                if (userAnswers[currentQuestionIndex] === idx) {
+                    li.classList.add('selected');
+                }
+
+                li.innerHTML = `
+                    <div class="option-marker">${String.fromCharCode(65 + idx)}</div>
+                    <span>${opt}</span>
+                `;
+                
+                li.addEventListener('click', () => selectOption(idx));
+                optionsContainer.appendChild(li);
+            });
+
+            document.getElementById('btnPrev').disabled = currentQuestionIndex === 0;
+            updateGridStatus();
+        }
+
+        function selectOption(optionIndex) {
+            userAnswers[currentQuestionIndex] = optionIndex;
+            renderQuestion();
+        }
+
+        function navigateQuestion(direction) {
+            currentQuestionIndex += direction;
+            renderQuestion();
+        }
+
+        function confirmFinish() {
+            if (timeLeft > 0) {
+                const confirmed = confirm("Apakah Anda yakin ingin menyelesaikan ujian ini? Nilai akan langsung muncul.");
+                if (confirmed) finishExam();
+            } else {
+                finishExam();
+            }
+        }
+
+        function finishExam() {
+            clearInterval(timerInterval);
+            isExamActive = false;
+
+            let correctCount = 0;
+            currentQuestions.forEach((q, idx) => {
+                if (userAnswers[idx] === q.a) {
+                    correctCount++;
+                }
+            });
+
+            const totalQuestions = currentQuestions.length;
+            const answeredCount = Object.keys(userAnswers).length;
+            const unansweredCount = totalQuestions - answeredCount;
+            const wrongCount = answeredCount - correctCount;
+            const score = Math.round((correctCount / totalQuestions) * 100);
+
+            examScreen.classList.add('hidden');
+            resultScreen.classList.remove('hidden');
+
+            const scoreEl = document.getElementById('finalScore');
+            let currentScoreDisplay = 0;
+            const scoreInterval = setInterval(() => {
+                if (currentScoreDisplay >= score) {
+                    clearInterval(scoreInterval);
+                } else {
+                    currentScoreDisplay++;
+                    scoreEl.textContent = currentScoreDisplay;
+                }
+            }, 20);
+
+            document.getElementById('resCorrect').textContent = correctCount;
+            document.getElementById('resWrong').textContent = wrongCount;
+            document.getElementById('resUnanswered').textContent = unansweredCount;
+
+            const motivationContainer = document.getElementById('motivationContainer');
+            if (score < 90) {
+                const motivations = [
+                    "Jangan menyerah! Prestasi bukan segalanya, proses belajar yang lebih penting.",
+                    "Tetap semangat! Kegagalan adalah kesuksesan yang tertunda.",
+                    "Hebat sudah mencoba! Ayo belajar lagi dan buktikan kamu bisa lebih baik.",
+                    "Nilai bukan akhir segalanya. Jadikan ini motivasi untuk belajar lebih giat lagi."
+                ];
+                const randomMsg = motivations[Math.floor(Math.random() * motivations.length)];
+                motivationContainer.innerHTML = `<h3>Pesan Untukmu:</h3><p>${randomMsg}</p>`;
+                motivationContainer.classList.remove('hidden');
+            } else {
+                motivationContainer.classList.add('hidden');
+            }
+        }
+
+        function startTimer() {
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    finishExam();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function handleSecurityViolation() {
+            if (!isExamActive) return;
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                location.reload();
+            }, 3000);
+        }
+
+        init();
+    </script>
+</body>
+</html>
